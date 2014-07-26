@@ -1,41 +1,26 @@
 package main
 
+// go version of demo at the top of this page:
+// https://developer.gnome.org/gtk3/stable/gtk-getting-started.html
+
 import (
-	"github.com/mattn/go-gtk/gtk"
-	"github.com/str1ngs/vte"
-	"os"
+	"github.com/willhaines/willterm/gtk3"
+	"github.com/willhaines/willterm/vte3"
+	//"unsafe"
 )
 
 func main() {
-	gtk.Init(&os.Args)
-	window := gtk.NewWindow(gtk.WINDOW_TOPLEVEL)
-	window.SetTitle("GTK Notebook")
-	window.Connect("destroy", gtk.MainQuit)
+	gtk3.Init()
+	window := gtk3.NewWindow(gtk3.WINDOW_TOPLEVEL)
+	window.SetTitle("This better fucking work")
 
-	window2 := gtk.NewWindow(gtk.WINDOW_TOPLEVEL)
-	window2.SetTitle("GTK Notebook")
-	window2.Connect("destroy", gtk.MainQuit)
+	terminal := vte3.NewTerminal()
+	window.Add(terminal.VteToGtk())
 
-	notebook := gtk.NewNotebook()
-	page := gtk.NewFrame("demo")
-	notebook.AppendPage(page, gtk.NewLabel("demo"))
-	notebook.SetTabDetachable(page, true)
-
-	terminal := vte.NewTerminal()
-	terminal.Fork([]string{"/bin/zsh", "--login"})
-
-	page.Add(terminal)
-
-	notebook.SetGroupName("foo")
-	window.Add(notebook)
-	window.SetSizeRequest(400, 200)
-	window.ShowAll()
-
-	notebook2 := gtk.NewNotebook()
-	notebook2.SetGroupName("foo")
-	window2.Add(notebook2)
-	window2.SetSizeRequest(400, 200)
-	window2.ShowAll()
-
-	gtk.Main()
+	argv := []string{ "/bin/zsh" }
+	terminal.Fork(argv)
+	terminal.VteToGtk().Show()
+	window.Show()
+	window.Connect("destroy", gtk3.MainQuit)
+	gtk3.Main()
 }

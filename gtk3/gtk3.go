@@ -33,12 +33,20 @@ type Widget struct {
 	GWidget *C.GtkWidget
 }
 
+func WidgetFromNative(p unsafe.Pointer) *Widget {
+	return &Widget{C.toGWidget(p)}
+}
+
 func (v *Widget) Show() {
 	C.gtk_widget_show(v.GWidget)
 }
 
 func (v *Widget) Connect(s string, f interface{}, datas ...interface{}) int {
 	return glib.ObjectFromNative(unsafe.Pointer(v.GWidget)).Connect(s, f, datas...)
+}
+
+func (v *Widget) Add(w *Widget) {
+	C.gtk_container_add(C.toGContainer(v.GWidget), w.GWidget)
 }
 
 // Window Functions
