@@ -35,3 +35,7 @@ func (t Terminal) Fork(args []string) {
 	C.vte_terminal_fork_command_full(C.toVTerminal(t.Widget), C.VTE_PTY_DEFAULT,
 		nil, argv, nil, C.G_SPAWN_SEARCH_PATH, nil, nil, nil, nil )
 }
+
+func (t Terminal) GetIconTitle() string {
+	return C.GoString(C.vte_terminal_get_icon_title(C.toVTerminal(t.Widget)))
+}
